@@ -6,42 +6,46 @@ import { ROLES2 } from "./roles2";
 const ROLES = [...ROLES1, ...ROLES2];
 const CATS = ["all","engineering","architecture","infrastructure","data","management","governance","security"];
 
-const TAG_ACCENT = {
-  engineering:"var(--green)", architecture:"var(--mauve)", infrastructure:"var(--blue)",
-  data:"var(--accent)", management:"var(--red)", governance:"var(--teal)", security:"var(--red)",
+const TAG_COLORS = {
+  engineering:   { bg:"bg-emerald-900/40", text:"text-emerald-300", border:"border-emerald-700" },
+  architecture:  { bg:"bg-violet-900/40",  text:"text-violet-300",  border:"border-violet-700" },
+  infrastructure:{ bg:"bg-sky-900/40",     text:"text-sky-300",     border:"border-sky-700" },
+  data:          { bg:"bg-amber-900/40",   text:"text-amber-300",   border:"border-amber-700" },
+  management:    { bg:"bg-rose-900/40",    text:"text-rose-300",    border:"border-rose-700" },
+  governance:    { bg:"bg-orange-900/40",  text:"text-orange-300",  border:"border-orange-700" },
+  security:      { bg:"bg-red-900/40",     text:"text-red-300",     border:"border-red-700" },
 };
+
+const LV_COLORS = ["","bg-emerald-600","bg-sky-500","bg-violet-500"];
 
 function Bar({ lv }) {
   return (
-    <div className="flex gap-0.5 mt-2">
+    <div className="flex gap-0.5 mt-1">
       {[1,2,3].map(i => (
-        <div key={i} className="h-1.5 flex-1 rounded-sm transition-all duration-300"
-          style={{ background: i <= lv ? "var(--accent)" : "var(--surface)" }} />
+        <div key={i} className={`h-1.5 flex-1 rounded-sm ${i <= lv ? LV_COLORS[lv] : "bg-gray-800"}`} />
       ))}
     </div>
   );
 }
 
-function SkillPanel({ domain, cap }) {
+function SkillDetail({ domain, cap }) {
   return (
-    <div className="mt-6 rounded-lg p-5" style={{ background: "var(--surface)" }}>
+    <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 mb-4">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-xl">{domain.icon}</span>
+        <span className="text-lg">{domain.icon}</span>
         <div>
-          <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            {domain.label} <span className="font-normal" style={{ color: "var(--muted)" }}>/ {domain.en}</span>
-          </h3>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>覆蓋：{LV_LABELS[cap.lv]}</p>
+          <h3 className="text-sm font-bold text-white">{domain.label} <span className="text-gray-500 font-normal text-xs">/ {domain.en}</span></h3>
+          <p className="text-xs text-gray-500">覆蓋層次：{LV_LABELS[cap.lv]}</p>
         </div>
       </div>
-      <ol className="space-y-2">
+      <div className="space-y-2">
         {cap.skills.map((s, i) => (
-          <li key={i} className="text-sm leading-relaxed flex gap-2" style={{ color: "var(--subtext)" }}>
-            <span className="font-mono text-xs shrink-0 w-4 text-right" style={{ color: "var(--muted)" }}>{i+1}</span>
+          <div key={i} className="flex gap-2 text-sm text-gray-300 leading-relaxed border-b border-gray-700/50 pb-2 last:border-0 last:pb-0">
+            <span className="text-xs text-gray-600 shrink-0 mt-0.5 w-5 text-right">{i+1}.</span>
             <span>{s}</span>
-          </li>
+          </div>
         ))}
-      </ol>
+      </div>
     </div>
   );
 }
@@ -55,86 +59,79 @@ export default function App() {
   const filtered = useMemo(() => catF === "all" ? ROLES : ROLES.filter(r => r.tag === catF), [catF]);
 
   return (
-    <div className="min-h-screen font-sans">
-      {/* Hero */}
-      <header className="px-6 md:px-12 pt-10 pb-6" style={{ borderBottom: "1px solid var(--surface)" }}>
-        <p className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-          OpenSSF · Global Cybersecurity Skills Framework
-        </p>
-        <h1 className="text-2xl md:text-3xl font-bold mt-2" style={{ color: "var(--text)" }}>
-          資安能力地圖
-        </h1>
-        <p className="text-sm mt-1 max-w-lg" style={{ color: "var(--subtext)" }}>
-          14 個職務族群 × 15 個能力領域。選擇職務查看覆蓋範圍，點擊領域展開技能。
-        </p>
-        <div className="flex gap-4 mt-3 text-xs" style={{ color: "var(--muted)" }}>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-1.5 rounded-sm" style={{ background: "var(--accent)" }} />基礎</span>
-          <span className="flex items-center gap-1.5"><span className="w-4 h-1.5 rounded-sm" style={{ background: "var(--accent)" }} />基礎+中階</span>
-          <span className="flex items-center gap-1.5"><span className="w-6 h-1.5 rounded-sm" style={{ background: "var(--accent)" }} />全層次</span>
+    <div className="min-h-screen font-sans text-gray-200">
+      {/* Header */}
+      <div className="border-b border-gray-800 px-5 py-4">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs text-gray-500 uppercase tracking-widest font-mono">Linux Foundation × OpenSSF · Global Cybersecurity Skills Framework</p>
+          <h1 className="text-lg font-bold text-white mt-0.5">各職務資安能力地圖</h1>
+          <p className="text-xs text-gray-500 mt-1">14 職務族群 × 15 能力領域　選擇職務 → 點擊能力領域查看技能細節</p>
+          <div className="flex gap-3 mt-2 text-xs text-gray-600">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-emerald-600 inline-block"/>基礎</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-sky-500 inline-block"/>基礎+中階</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-violet-500 inline-block"/>全層次</span>
+          </div>
         </div>
-      </header>
+      </div>
 
-      <main className="px-6 md:px-12 py-6 flex flex-col md:flex-row gap-6 max-w-7xl">
+      <div className="max-w-5xl mx-auto px-5 py-5 flex gap-5">
         {/* Sidebar */}
-        <aside className="md:w-52 shrink-0">
-          <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="w-52 shrink-0">
+          <div className="flex flex-wrap gap-1 mb-3">
             {CATS.map(c => (
               <button key={c} onClick={() => { setCatF(c); setSelId(null); setSelDom(null); }}
-                className="text-xs px-2.5 py-1 rounded-md transition-colors"
-                style={{ background: catF === c ? "var(--surface-hover)" : "transparent", color: catF === c ? "var(--text)" : "var(--muted)" }}>
+                className={`text-xs px-2 py-0.5 rounded border transition-all ${catF === c ? "bg-gray-700 text-white border-gray-600" : "border-gray-800 text-gray-500 hover:text-gray-300"}`}>
                 {c === "all" ? "全部" : TAG_LABELS[c]}
               </button>
             ))}
           </div>
-          <nav className="space-y-0.5">
-            {filtered.map(r => (
+          {filtered.map(r => {
+            const tc = TAG_COLORS[r.tag];
+            return (
               <button key={r.id} onClick={() => { setSelId(r.id); setSelDom(null); }}
-                className="w-full text-left px-3 py-2 rounded-md transition-colors"
-                style={{ background: selId === r.id ? "var(--surface)" : "transparent" }}>
-                <div className="text-xs font-semibold" style={{ color: selId === r.id ? "var(--text)" : "var(--subtext)" }}>{r.zh}</div>
-                <div className="text-xs font-mono" style={{ color: "var(--muted)" }}>{r.title}</div>
+                className={`w-full text-left px-3 py-2 mb-1 rounded border transition-all ${selId === r.id ? `${tc.bg} ${tc.border} ${tc.text}` : "border-transparent text-gray-400 hover:bg-gray-800/40 hover:text-gray-200"}`}>
+                <div className="text-xs font-semibold leading-tight">{r.zh}</div>
+                <div className="flex items-center justify-between mt-0.5">
+                  <span className="text-xs text-gray-600">{r.title}</span>
+                  <span className="text-xs text-gray-700">{Object.keys(r.caps).length}</span>
+                </div>
               </button>
-            ))}
-          </nav>
-        </aside>
+            );
+          })}
+        </div>
 
         {/* Content */}
         {!role ? (
-          <div className="flex-1 flex items-center justify-center min-h-[50vh]">
-            <p className="text-sm" style={{ color: "var(--muted)" }}>← 選擇職務族群</p>
+          <div className="flex-1 flex items-center justify-center text-gray-700">
+            <div className="text-center"><div className="text-3xl mb-2">⟵</div><p className="text-sm">選擇職務族群</p></div>
           </div>
         ) : (
           <div className="flex-1 min-w-0">
             {/* Role header */}
-            <div className="rounded-lg p-5 mb-5" style={{ background: "var(--surface)", borderLeft: `3px solid ${TAG_ACCENT[role.tag]}` }}>
-              <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>{role.zh}</h2>
-              <p className="text-sm font-mono mt-0.5" style={{ color: "var(--muted)" }}>{role.title}</p>
-              <p className="text-xs mt-1" style={{ color: TAG_ACCENT[role.tag] }}>
-                {TAG_LABELS[role.tag]} · {Object.keys(role.caps).length} 個領域
-              </p>
+            <div className={`rounded-lg border p-4 mb-4 ${TAG_COLORS[role.tag].bg} ${TAG_COLORS[role.tag].border}`}>
+              <h2 className={`text-lg font-bold ${TAG_COLORS[role.tag].text}`}>{role.zh}</h2>
+              <p className="text-sm text-gray-400">{role.title}</p>
+              <p className="text-xs text-gray-500 mt-1">{Object.keys(role.caps).length} 個資安能力領域 · {TAG_LABELS[role.tag]}</p>
             </div>
 
-            {/* Domain grid — CSS Grid cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {/* Domain grid */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
               {DOMAINS.map(d => {
                 const cap = role.caps[d.id];
                 if (!cap) return (
-                  <div key={d.id} className="rounded-md px-3 py-2.5 opacity-25"
-                    style={{ background: "var(--surface)" }}>
-                    <span className="text-sm">{d.icon}</span>
-                    <span className="text-xs ml-1.5" style={{ color: "var(--muted)" }}>{d.label}</span>
+                  <div key={d.id} className="rounded border border-gray-900 bg-gray-900/20 px-3 py-2 opacity-20">
+                    <div className="flex items-center gap-1.5"><span className="text-sm">{d.icon}</span><span className="text-xs text-gray-600">{d.label}</span></div>
                   </div>
                 );
-                const active = selDom === d.id;
                 return (
-                  <button key={d.id} onClick={() => setSelDom(active ? null : d.id)}
-                    className="text-left rounded-md px-3 py-2.5 transition-colors"
-                    style={{ background: active ? "var(--surface-hover)" : "var(--surface)", border: active ? "1px solid var(--accent)" : "1px solid transparent" }}>
-                    <div className="flex items-center justify-between">
-                      <span><span className="text-sm">{d.icon}</span><span className="text-xs ml-1.5" style={{ color: "var(--text)" }}>{d.label}</span></span>
-                      <span className="text-xs font-mono" style={{ color: "var(--muted)" }}>{cap.skills.length}</span>
+                  <button key={d.id} onClick={() => setSelDom(selDom === d.id ? null : d.id)}
+                    className={`text-left rounded border px-3 py-2 transition-all ${selDom === d.id ? "bg-gray-700 border-gray-500 text-white" : "bg-gray-800/50 border-gray-700 text-gray-300 hover:border-gray-500 hover:bg-gray-800"}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm">{d.icon}</span>
+                      <span className="text-xs font-semibold">{d.label}</span>
                     </div>
                     <Bar lv={cap.lv} />
+                    <div className="text-xs text-gray-600 mt-1">{cap.skills.length} 項技能</div>
                   </button>
                 );
               })}
@@ -142,24 +139,29 @@ export default function App() {
 
             {/* Skill detail */}
             {selDom && role.caps[selDom] && (
-              <SkillPanel domain={DOMAINS.find(x => x.id === selDom)} cap={role.caps[selDom]} />
+              <SkillDetail domain={DOMAINS.find(x => x.id === selDom)} cap={role.caps[selDom]} />
             )}
 
             {/* Uncovered */}
-            {DOMAINS.filter(d => !role.caps[d.id]).length > 0 && (
-              <p className="mt-6 text-xs" style={{ color: "var(--muted)" }}>
-                未涵蓋：{DOMAINS.filter(d => !role.caps[d.id]).map(d => d.label).join("、")}
-              </p>
-            )}
+            <div className="pt-3 border-t border-gray-800">
+              <p className="text-xs text-gray-600 mb-2">此職務未涵蓋的能力領域：</p>
+              <div className="flex flex-wrap gap-1.5">
+                {DOMAINS.filter(d => !role.caps[d.id]).map(d => (
+                  <span key={d.id} className="text-xs px-2 py-0.5 rounded border border-gray-800 text-gray-700">{d.icon} {d.label}</span>
+                ))}
+              </div>
+            </div>
           </div>
         )}
-      </main>
+      </div>
 
       {/* Footer */}
-      <footer className="px-6 md:px-12 py-6 text-xs space-y-1" style={{ color: "var(--muted)", borderTop: "1px solid var(--surface)" }}>
-        <p>資料來源：Linux Foundation × OpenSSF《<a href="https://cybersecurityframework.io" target="_blank" rel="noopener" className="underline" style={{ color: "var(--accent)" }}>Global Cybersecurity Skills Framework</a>》（2025-05-14）</p>
-        <p>原始資料：<a href="https://github.com/ossf/global-cybersecurity-skills-framework" target="_blank" rel="noopener" className="underline" style={{ color: "var(--accent)" }}>ossf/global-cybersecurity-skills-framework</a></p>
-        <p style={{ color: "var(--overlay)" }}>本視覺化僅供參考，資料著作權歸 OpenSSF / Linux Foundation 所有。</p>
+      <footer className="border-t border-gray-800 px-5 py-4 mt-8">
+        <div className="max-w-5xl mx-auto text-xs text-gray-600 space-y-1">
+          <p>資料來源：Linux Foundation × OpenSSF《<a href="https://cybersecurityframework.io" target="_blank" rel="noopener" className="underline text-gray-500 hover:text-gray-300">Global Cybersecurity Skills Framework</a>》（2025-05-14）</p>
+          <p>原始資料：<a href="https://github.com/ossf/global-cybersecurity-skills-framework" target="_blank" rel="noopener" className="underline text-gray-500 hover:text-gray-300">ossf/global-cybersecurity-skills-framework</a></p>
+          <p className="text-gray-700">本視覺化僅供參考，資料著作權歸 OpenSSF / Linux Foundation 所有。</p>
+        </div>
       </footer>
     </div>
   );
