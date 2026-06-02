@@ -6,6 +6,17 @@ import { ROLES2 } from "./roles2";
 const ROLES = [...ROLES1, ...ROLES2];
 const CATS = ["all","engineering","architecture","infrastructure","data","management","governance","security"];
 
+// 技術深度 → accent 色深淺（同色系，靠明度區分）
+const TAG_TINT = {
+  engineering:   "#0891b2", // 高技術 — 亮 teal
+  security:      "#06b6d4", // 高技術
+  architecture:  "#0e7490", // 中技術
+  infrastructure:"#0e7490",
+  data:          "#155e75", // 中技術
+  management:    "#475569", // 低技術深度 — 偏 slate
+  governance:    "#475569",
+};
+
 function LvBar({ lv }) {
   const pct = [0, 33, 66, 100][lv];
   return (
@@ -49,10 +60,13 @@ export default function App() {
           <div className="space-y-px">
             {filtered.map(r => (
               <button key={r.id} onClick={() => { setSelId(r.id); setSelDom(null); }}
-                className="w-full text-left px-3 py-2 rounded transition-colors"
+                className="w-full text-left px-3 py-2 rounded transition-colors flex items-center gap-2"
                 style={{ background: selId === r.id ? "var(--card)" : "transparent" }}>
-                <div className="text-sm font-medium" style={{ color: selId === r.id ? "var(--text)" : "var(--sub)" }}>{r.zh}</div>
-                <div className="text-xs font-mono" style={{ color: "var(--dim)" }}>{r.title}</div>
+                <span className="w-0.5 h-4 rounded-full shrink-0" style={{ background: TAG_TINT[r.tag] }} />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium truncate" style={{ color: selId === r.id ? "var(--text)" : "var(--sub)" }}>{r.zh}</div>
+                  <div className="text-xs font-mono truncate" style={{ color: "var(--dim)" }}>{r.title}</div>
+                </div>
               </button>
             ))}
           </div>
@@ -65,7 +79,7 @@ export default function App() {
           ) : (
             <>
               {/* Role title */}
-              <div className="mb-6 pl-4" style={{ borderLeft: "3px solid var(--accent)" }}>
+              <div className="mb-6 pl-4" style={{ borderLeft: `3px solid ${TAG_TINT[role.tag]}` }}>
                 <h2 className="text-xl font-bold">{role.zh}</h2>
                 <p className="text-sm font-mono mt-0.5" style={{ color: "var(--dim)" }}>{role.title} · {TAG_LABELS[role.tag]}</p>
               </div>
