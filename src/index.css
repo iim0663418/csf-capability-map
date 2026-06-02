@@ -1,13 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'Azeret Mono', ui-monospace, monospace;
+}
+
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --card-hover: #334155;
+  --border: #334155;
+  --text: #e2e8f0;
+  --sub: #94a3b8;
+  --dim: #64748b;
+  --accent: #0891b2;
+  --accent2: #0369a1;
 }
 
 html { scroll-behavior: smooth; }
-body {
-  background: #080c16;
-  -webkit-font-smoothing: antialiased;
-}
-::selection { background: rgba(139, 92, 246, 0.3); }
+body { background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+::selection { background: rgba(8, 145, 178, 0.25); }
