@@ -6,15 +6,15 @@ import { ROLES2 } from "./roles2";
 const ROLES = [...ROLES1, ...ROLES2];
 const CATS = ["all","engineering","architecture","infrastructure","data","management","governance","security"];
 
-// 技術深度 → accent 色深淺（同色系，靠明度區分）
+// 技術深度 → 色差拉大（冷→暖 = 高技術→管理）
 const TAG_TINT = {
-  engineering:   "#0891b2", // 高技術 — 亮 teal
-  security:      "#06b6d4", // 高技術
-  architecture:  "#0e7490", // 中技術
-  infrastructure:"#0e7490",
-  data:          "#155e75", // 中技術
-  management:    "#475569", // 低技術深度 — 偏 slate
-  governance:    "#475569",
+  engineering:   "#22d3ee", // cyan-400 亮
+  security:      "#2dd4bf", // teal-400
+  architecture:  "#60a5fa", // blue-400
+  infrastructure:"#818cf8", // indigo-400
+  data:          "#a78bfa", // violet-400
+  management:    "#fb923c", // orange-400
+  governance:    "#fbbf24", // amber-400
 };
 
 function LvBar({ lv, tint }) {
