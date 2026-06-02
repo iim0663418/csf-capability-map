@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans">
-      {/* Header — 非對稱，靠左 */}
+      {/* Header */}
       <header className="px-6 lg:px-16 pt-12 pb-8" style={{ borderBottom: "1px solid var(--border)" }}>
         <p className="font-mono text-xs tracking-wide" style={{ color: "var(--dim)" }}>OpenSSF / Cybersecurity Skills Framework</p>
         <h1 className="text-3xl font-bold mt-3 tracking-tight" style={{ color: "var(--text)" }}>資安能力地圖</h1>
@@ -35,7 +35,7 @@ export default function App() {
       </header>
 
       <div className="flex flex-col lg:flex-row">
-        {/* Sidebar — 窄、密集 */}
+        {/* Sidebar */}
         <aside className="lg:w-56 shrink-0 px-6 lg:px-0 lg:pl-16 py-6" style={{ borderRight: "1px solid var(--border)" }}>
           <div className="flex flex-wrap gap-1 mb-4">
             {CATS.map(c => (
@@ -58,50 +58,61 @@ export default function App() {
           </div>
         </aside>
 
-        {/* Main content */}
+        {/* Main */}
         <main className="flex-1 min-w-0 px-6 lg:px-12 py-8">
           {!role ? (
             <p className="text-sm pt-20" style={{ color: "var(--dim)" }}>選擇職務以檢視能力分佈</p>
           ) : (
             <>
-              {/* Role title — 左邊線標示 */}
-              <div className="mb-8 pl-4" style={{ borderLeft: "3px solid var(--accent)" }}>
+              {/* Role title */}
+              <div className="mb-6 pl-4" style={{ borderLeft: "3px solid var(--accent)" }}>
                 <h2 className="text-xl font-bold">{role.zh}</h2>
                 <p className="text-sm font-mono mt-0.5" style={{ color: "var(--dim)" }}>{role.title} · {TAG_LABELS[role.tag]}</p>
               </div>
 
-              {/* Capability list — 非 grid，用列表打破對稱 */}
-              <div className="space-y-1">
-                {DOMAINS.map(d => {
+              {/* Grid buttons — 只顯示有覆蓋的領域 */}
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 mb-6">
+                {DOMAINS.filter(d => role.caps[d.id]).map(d => {
                   const cap = role.caps[d.id];
-                  if (!cap) return null;
                   const active = selDom === d.id;
                   return (
-                    <div key={d.id}>
-                      <button onClick={() => setSelDom(active ? null : d.id)}
-                        className="w-full flex items-center gap-4 px-4 py-3 rounded-lg transition-colors text-left"
-                        style={{ background: active ? "var(--card)" : "transparent" }}>
-                        <span className="text-sm w-5 text-center shrink-0">{d.icon}</span>
-                        <span className="text-sm font-medium flex-1" style={{ color: active ? "var(--text)" : "var(--sub)" }}>{d.label}</span>
-                        <span className="text-xs font-mono shrink-0" style={{ color: "var(--dim)" }}>{cap.skills.length}</span>
-                        <div className="w-20 shrink-0"><LvBar lv={cap.lv} /></div>
-                      </button>
-                      {active && (
-                        <div className="ml-9 pl-4 py-3 mb-2" style={{ borderLeft: "2px solid var(--border)" }}>
-                          <p className="text-xs font-mono mb-2" style={{ color: "var(--dim)" }}>{d.en} · {LV_LABELS[cap.lv]}</p>
-                          {cap.skills.map((s, i) => (
-                            <p key={i} className="text-sm leading-relaxed py-1" style={{ color: "var(--sub)" }}>{s}</p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <button key={d.id} onClick={() => setSelDom(active ? null : d.id)}
+                      className="text-left rounded-lg px-3 py-2.5 transition-colors"
+                      style={{ background: active ? "var(--card-hover)" : "var(--card)", border: active ? "1px solid var(--accent)" : "1px solid var(--border)" }}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">{d.icon}</span>
+                        <span className="text-xs font-medium" style={{ color: active ? "var(--text)" : "var(--sub)" }}>{d.label}</span>
+                      </div>
+                      <LvBar lv={cap.lv} />
+                      <div className="text-xs font-mono mt-1" style={{ color: "var(--dim)" }}>{cap.skills.length} 項</div>
+                    </button>
                   );
                 })}
               </div>
 
+              {/* Detail panel */}
+              {selDom && role.caps[selDom] && (() => {
+                const d = DOMAINS.find(x => x.id === selDom);
+                const cap = role.caps[selDom];
+                return (
+                  <div className="rounded-lg p-5 mb-6" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-lg">{d.icon}</span>
+                      <div>
+                        <h3 className="text-sm font-bold">{d.label} <span className="font-normal" style={{ color: "var(--dim)" }}>/ {d.en}</span></h3>
+                        <p className="text-xs" style={{ color: "var(--dim)" }}>覆蓋：{LV_LABELS[cap.lv]}</p>
+                      </div>
+                    </div>
+                    {cap.skills.map((s, i) => (
+                      <p key={i} className="text-sm leading-relaxed py-1.5" style={{ color: "var(--sub)", borderBottom: i < cap.skills.length - 1 ? "1px solid var(--border)" : "none" }}>{s}</p>
+                    ))}
+                  </div>
+                );
+              })()}
+
               {/* Uncovered */}
               {DOMAINS.filter(d => !role.caps[d.id]).length > 0 && (
-                <p className="mt-8 text-xs" style={{ color: "var(--dim)" }}>
+                <p className="text-xs" style={{ color: "var(--dim)" }}>
                   未涵蓋：{DOMAINS.filter(d => !role.caps[d.id]).map(d => d.label).join("、")}
                 </p>
               )}
