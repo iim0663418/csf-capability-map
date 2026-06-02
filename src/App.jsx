@@ -80,7 +80,7 @@ export default function App() {
                       className="text-left rounded-lg px-3 py-2.5 transition-colors"
                       style={{ background: active ? "var(--card-hover)" : "var(--card)", border: active ? "1px solid var(--accent)" : "1px solid var(--border)" }}>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm">{d.icon}</span>
+                        <span className="text-xs font-mono px-1 rounded" style={{ background: "var(--border)", color: "var(--dim)" }}>{d.tag}</span>
                         <span className="text-xs font-medium" style={{ color: active ? "var(--text)" : "var(--sub)" }}>{d.label}</span>
                       </div>
                       <LvBar lv={cap.lv} />
@@ -97,7 +97,7 @@ export default function App() {
                 return (
                   <div className="rounded-lg p-5 mb-6" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-lg">{d.icon}</span>
+                      <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{ background: "var(--border)", color: "var(--accent)" }}>{d.tag}</span>
                       <div>
                         <h3 className="text-sm font-bold">{d.label} <span className="font-normal" style={{ color: "var(--dim)" }}>/ {d.en}</span></h3>
                         <p className="text-xs" style={{ color: "var(--dim)" }}>覆蓋：{LV_LABELS[cap.lv]}</p>
